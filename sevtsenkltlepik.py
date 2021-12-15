@@ -16,9 +16,12 @@ def menyy():
     global tiim2
     global ristmikud
     global manginupp
-    global vaikemang
+    global v2ikemang
     global keskmang
     global suurmang
+    global kirsipuu
+    global hall
+    global muru
     
     pyg.init()
     
@@ -32,8 +35,6 @@ def menyy():
     konstant = 100
     
     #Värvid
-    taust = pyg.Color(171, 171, 171)
-    
     must = pyg.Color(0,0,0)
     
     #Mäng on ehitatud järjenditel
@@ -43,19 +44,27 @@ def menyy():
     
     #Akna ehitamine
     ekraan = pyg.display.set_mode(suurus)
-    ekraan.fill(taust)
+    ekraan.blit(taust, (0,0))
 
     #Nupud menüüs
     manginupp = pyg.Rect(((aknax-2*konstant)/2, konstant/2, 2*konstant, konstant/2))
-    vaikemang = pyg.Rect(5*aknax/6-konstant/2, aknay/3, konstant/2, konstant/2)
+    v2ikemang = pyg.Rect(5*aknax/6-konstant/2, aknay/3, konstant/2, konstant/2)
     keskmang = pyg.Rect((2*aknax/3, aknay/3, konstant, konstant))
     suurmang = pyg.Rect((aknax/2, aknay/3, 1.5*konstant, 1.5*konstant))
-
-    pyg.draw.rect(ekraan, (50, 50, 50), manginupp)
-    pyg.draw.rect(ekraan, (50, 50, 50), vaikemang)
-    pyg.draw.rect(ekraan, (50, 250, 50), keskmang)
-    pyg.draw.rect(ekraan, (50, 50, 50), suurmang)
     
+    #Tausta valikud
+    kirsipuu = pyg.Rect((aknax/3, aknay/3, konstant, konstant))
+    hall = pyg.Rect((aknax/3 - 2*konstant, aknay/3, konstant, konstant))
+    muru = pyg.Rect((aknax/3) - 4*konstant, aknay/3, konstant, konstant)
+    
+    #Joonista nupud
+    ekraan.blit(pyg.image.load("Pildid/m2ngi.png"), manginupp)
+    ekraan.blit(pyg.transform.scale(pyg.image.load("Pildid/v2ike.png"), v2ikemang.size), v2ikemang)
+    ekraan.blit(pyg.transform.scale(pyg.image.load("Pildid/kesk_valitud.png"), keskmang.size), keskmang)
+    ekraan.blit(pyg.transform.scale(pyg.image.load("Pildid/suur.png"), suurmang.size), suurmang)
+    ekraan.blit(pyg.transform.scale(pyg.image.load("Pildid/kirssnupp.png"), kirsipuu.size), kirsipuu)
+    ekraan.blit(pyg.transform.scale(pyg.image.load("Pildid/hallnupp.png"), hall.size), hall)
+    ekraan.blit(pyg.transform.scale(pyg.image.load("Pildid/murunupp.png"), muru.size), muru)    
 
 #Mängulaud
 def laud():
@@ -65,17 +74,17 @@ def laud():
     aktiivne = 1
     
     #Menüü värvitakse üle
-    ekraan.fill(taust)
+    ekraan.blit(taust, (0,0))
     
     #Standard konstant
     vahed = konstant/2
     
     #Ruudustik
     for i in range(int(aknax/vahed)):
-        pyg.draw.line(ekraan, must, (vahed*i, 0), (vahed*i, aknay))
+        pyg.draw.line(ekraan, must, (vahed*i, 0), (vahed*i, aknay), 3)
         
     for j in range(int(aknay/vahed)):
-        pyg.draw.line(ekraan, must, (0, vahed*j), (aknax, vahed*j))
+        pyg.draw.line(ekraan, must, (0, vahed*j), (aknax, vahed*j), 3)
     
     #Ruudustiku ristumiskohad e. n.n. mänguväljad
     #Pane tähele! Kui ekraani koordinaatidega oleksid ristumis kohad reas näiteks [(10, 10),(20, 10),(30, 10)...],
@@ -93,12 +102,13 @@ def klops():
     hiiry = hiir[1]
     
     #Defineerime värvid
-    punane = (210, 50, 20)
-    sinine = (20, 20, 210)
+    v2rv1 = (210, 50, 20)
+    v2rv2 = (20, 20, 210)
     
     global aktiivne
     global konstant
     global tiim
+    global taust
     
     #Kui menüü on ees
     #TAGASTUS: 0 - Eesmärk täidetud
@@ -111,25 +121,45 @@ def klops():
         #Suurem plats
         elif suurmang.x < hiirx < suurmang.x+suurmang.w and suurmang.y < hiiry < suurmang.y+suurmang.h:
             konstant = 75
-            pyg.draw.rect(ekraan, (50, 50, 50), vaikemang)
-            pyg.draw.rect(ekraan, (50, 50, 50), keskmang)
-            pyg.draw.rect(ekraan, (50, 250, 50), suurmang)
+            ekraan.blit(pyg.transform.scale(pyg.image.load("Pildid/v2ike.png"), v2ikemang.size), v2ikemang)
+            ekraan.blit(pyg.transform.scale(pyg.image.load("Pildid/kesk.png"), keskmang.size), keskmang)
+            ekraan.blit(pyg.transform.scale(pyg.image.load("Pildid/suur_valitud.png"), suurmang.size), suurmang)
             return 0
         
         #Tavaline plats
         elif keskmang.x < hiirx < keskmang.x+keskmang.w and keskmang.y < hiiry < keskmang.y+keskmang.h:
             konstant = 100
-            pyg.draw.rect(ekraan, (50, 50, 50), vaikemang)
-            pyg.draw.rect(ekraan, (50, 250, 50), keskmang)
-            pyg.draw.rect(ekraan, (50, 50, 50), suurmang)
+            ekraan.blit(pyg.transform.scale(pyg.image.load("Pildid/v2ike.png"), v2ikemang.size), v2ikemang)
+            ekraan.blit(pyg.transform.scale(pyg.image.load("Pildid/kesk_valitud.png"), keskmang.size), keskmang)
+            ekraan.blit(pyg.transform.scale(pyg.image.load("Pildid/suur.png"), suurmang.size), suurmang)
             return 0
         
         #Väikseim plats
-        elif vaikemang.x < hiirx < vaikemang.x+vaikemang.w and vaikemang.y < hiiry < vaikemang.y+vaikemang.h:
+        elif v2ikemang.x < hiirx < v2ikemang.x+v2ikemang.w and v2ikemang.y < hiiry < v2ikemang.y+v2ikemang.h:
             konstant = 150
-            pyg.draw.rect(ekraan, (50, 250, 50), vaikemang)
-            pyg.draw.rect(ekraan, (50, 50, 50), keskmang)
-            pyg.draw.rect(ekraan, (50, 50, 50), suurmang)
+            ekraan.blit(pyg.transform.scale(pyg.image.load("Pildid/v2ike_valitud.png"), v2ikemang.size), v2ikemang)
+            ekraan.blit(pyg.transform.scale(pyg.image.load("Pildid/kesk.png"), keskmang.size), keskmang)
+            ekraan.blit(pyg.transform.scale(pyg.image.load("Pildid/suur.png"), suurmang.size), suurmang)
+            return 0
+        
+        #Kirsipuudega taust
+        elif kirsipuu.x < hiirx < kirsipuu.x+kirsipuu.w and kirsipuu.y < hiiry < kirsipuu.y+kirsipuu.h:
+            kirsitaust = pyg.image.load("Pildid/kirsipuu.jpg")
+            taust = pyg.transform.scale(kirsitaust, ekraan.get_size())
+            menyy()
+            return 0
+        
+        #Hall taust
+        elif hall.x < hiirx < hall.x+hall.w and hall.y < hiiry < hall.y+hall.h:
+            taust = pyg.image.load("Pildid/hall.png")
+            menyy()
+            return 0
+        
+        #Muru taust
+        elif muru.x < hiirx < muru.x+muru.w and muru.y < hiiry < muru.y+muru.h:
+            murutaust = pyg.image.load("Pildid/muru.jpg")
+            taust = pyg.transform.scale(murutaust, ekraan.get_size())
+            menyy()
             return 0
         
         
@@ -150,7 +180,7 @@ def klops():
             #Tiim1
             if tiim == 0:
                 #Joonistab nupu
-                pyg.draw.circle(ekraan, punane, (vahed*klopsx, vahed*klopsy), 2*vahed/5)
+                pyg.draw.circle(ekraan, v2rv1, (vahed*klopsx, vahed*klopsy), 2*vahed/5)
                 
                 #Eemaldab välja vabade väljade hulgast, lisab tiimi nuppude hulka
                 ristmikud.pop(ristmikud.index([klopsx, klopsy]))
@@ -165,7 +195,7 @@ def klops():
             
             #Tiim2
             #Joonistab nupu
-            pyg.draw.circle(ekraan, sinine, (vahed*klopsx, vahed*klopsy), 2*vahed/5)
+            pyg.draw.circle(ekraan, v2rv2, (vahed*klopsx, vahed*klopsy), 2*vahed/5)
             
             #Eemaldab välja vabade väljade hulgast, lisab tiimi nuppude hulka
             ristmikud.pop(ristmikud.index([klopsx, klopsy]))
@@ -226,21 +256,21 @@ def manglabi():
     global quitnupp
     
     #Joonistab akna tausta
-    labitaust = pyg.Rect((aknax/4, 5/8*aknay, aknax/2, aknay/4))
-    labitaustaar = pyg.Rect((aknax/4-2, 5/8*aknay-2, aknax/2+4, aknay/4+4))
+    l2bitaust = pyg.Rect((aknax/4, 5/8*aknay, aknax/2, aknay/4))
+    l2bitaust22r = pyg.Rect((aknax/4-2, 5/8*aknay-2, aknax/2+4, aknay/4+4))
     
-    pyg.draw.rect(ekraan, (50, 50, 50), labitaustaar)
-    pyg.draw.rect(ekraan, (171, 171, 171), labitaust)
+    pyg.draw.rect(ekraan, (50, 50, 50), l2bitaust22r)
+    pyg.draw.rect(ekraan, (171, 171, 171), l2bitaust)
     
     #Joonistab nupud
     menyynupp = pyg.Rect((aknax/4+aknax/16, 11/16*aknay, aknax/8, aknay/8))
     quitnupp = pyg.Rect((aknax/2+aknax/16, 11/16*aknay, aknax/8, aknay/8))
     
-    pyg.draw.rect(ekraan, (50, 50, 50), menyynupp)
-    pyg.draw.rect(ekraan, (250, 50, 50), quitnupp)
-    
+    ekraan.blit(pyg.transform.scale(pyg.image.load("Pildid/menyynupp.png"), menyynupp.size), menyynupp)
+    ekraan.blit(pyg.transform.scale(pyg.image.load("Pildid/sulgenupp.png"), quitnupp.size), quitnupp)    
     
 #Initsialiseerib mängu
+taust = pyg.image.load("Pildid/hall.png")
 menyy()
 #Mängu "Main loop"
 while True:
